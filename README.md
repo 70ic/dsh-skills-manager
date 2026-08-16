@@ -44,7 +44,9 @@ Remove it again with `dsh plugin --profile web remove dsh-skills-manager`.
 
 ## Configure
 
-The bundle mounts the plugin inert (`mode: all`). Configure it in your profile's own patch layer — `$DSH_HOME/profiles/web/cordis.patch.yml` (`~/.dsh` by default), which is applied after every bundle layer:
+Out of the box every skill stays visible, but the `/skills` command is
+already live: `/skills disable <name>` hides a skill for the current project
+immediately. Add a static policy in your profile's own patch layer — `$DSH_HOME/profiles/web/cordis.patch.yml` (`~/.dsh` by default), which is applied after every bundle layer:
 
 ```yaml
 - id: skill-manager

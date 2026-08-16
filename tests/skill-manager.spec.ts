@@ -98,8 +98,11 @@ function commandInvocation(rawInput: string, cwd: string | undefined) {
 }
 
 describe('resolveEnabled policy', () => {
-  it('keeps every skill in all mode and ignores overrides', () => {
-    expect(resolveEnabled('all', ['alpha'], { disabled: ['alpha'] }, 'alpha')).toBe(true)
+  it('keeps every skill visible in all mode while overrides still apply', () => {
+    expect(resolveEnabled('all', ['alpha'], undefined, 'alpha')).toBe(true)
+    expect(resolveEnabled('all', ['alpha'], undefined, 'beta')).toBe(true)
+    expect(resolveEnabled('all', ['alpha'], { disabled: ['alpha'] }, 'alpha')).toBe(false)
+    expect(resolveEnabled('all', ['alpha'], { enabled: ['alpha'] }, 'alpha')).toBe(true)
   })
 
   it('hides deny-listed names unless an override re-enables them', () => {
@@ -134,7 +137,7 @@ describe('parseState and projectKeyOf', () => {
 })
 
 describe('skill-manager plugin', () => {
-  it('mounts inert in all mode: every skill stays with its original provider', async () => {
+  it('mounts visible-everything in all mode: every skill stays with its original provider', async () => {
     const harness = await createHarness({})
     const providers = await settledProviders(harness)
     expect(providers.get('alpha')).toBe('memory')
@@ -216,11 +219,13 @@ describe('/skills command', () => {
     expect((await settledProviders(harness, cwd)).get('gamma')).toBe('memory')
   })
 
-  it('rejects mutations and unknown grammar', async () => {
+  it('applies runtime overrides in all mode and rejects unknown grammar', async () => {
     const inert = await createHarness({})
+    await settledProviders(inert, 'F:\\proj')
     const inertCommand = await captureSkillsCommand(inert)
     const mutation = await inertCommand.handler(commandInvocation('disable gamma', 'F:\\proj'))
-    expect(mutation).toMatchObject({ kind: 'error' })
+    expect(mutation).toMatchObject({ kind: 'success' })
+    expect((await settledProviders(inert, 'F:\\proj')).get('gamma')).toBe('skill-manager')
 
     const harness = await createHarness({ mode: 'deny-list', names: [] })
     await settledProviders(harness)

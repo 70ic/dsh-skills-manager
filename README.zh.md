@@ -44,7 +44,8 @@ dsh --profile web
 
 ## 配置
 
-bundle 以惰性方式挂载（`mode: all`）。在你自己的 profile 补丁层——`$DSH_HOME/profiles/web/cordis.patch.yml`（默认 `~/.dsh`）——里配置，它应用在所有 bundle 层之后：
+开箱即全部 skill 可见，但 `/skills` 命令立刻可用：`/skills disable <name>`
+马上对当前项目隐藏一个 skill。如需静态策略，在你自己的 profile 补丁层——`$DSH_HOME/profiles/web/cordis.patch.yml`（默认 `~/.dsh`）——里配置，它应用在所有 bundle 层之后：
 
 ```yaml
 - id: skill-manager

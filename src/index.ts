@@ -48,10 +48,9 @@ export type SkillManagerMode = 'all' | 'deny-list' | 'allow-list'
 /** Plugin configuration. */
 export interface Config {
   /**
-   * Visibility policy: `all` mounts the manager inert, `deny-list` hides the
-   * configured names, `allow-list` hides everything except the configured
-   * names. Runtime overrides apply in both listing modes and are ignored in
-   * `all`.
+   * Visibility policy: `all` keeps every skill visible, `deny-list` hides
+   * the configured names, `allow-list` hides everything except the
+   * configured names. Runtime `/skills` overrides apply in every mode.
    */
   mode?: SkillManagerMode
   /** Names the selected mode operates on; kebab-case skill identifiers. */
@@ -104,8 +103,10 @@ export function projectKeyOf(cwd: string | undefined): string {
 }
 
 /**
- * Resolve one skill name's visibility. Overrides outrank the static policy;
- * `all` is inert. Pure so tests and the provider share one definition.
+ * Resolve one skill name's visibility. Runtime overrides always outrank the
+ * static policy, in every mode — so the manager is useful out of the box:
+ * `mode: 'all'` means "everything visible, `/skills` toggles available".
+ * Pure so tests and the provider share one definition.
  */
 export function resolveEnabled(
   mode: SkillManagerMode,
@@ -113,9 +114,9 @@ export function resolveEnabled(
   overrides: ProjectOverrides | undefined,
   skillName: string,
 ): boolean {
-  if (mode === 'all') return true
   if (overrides?.enabled?.includes(skillName)) return true
   if (overrides?.disabled?.includes(skillName)) return false
+  if (mode === 'all') return true
   return mode === 'allow-list' ? names.includes(skillName) : !names.includes(skillName)
 }
 
@@ -181,7 +182,6 @@ class SkillManager {
   readonly provider: SkillProvider = {
     name: MANAGER_PROVIDER,
     list: (options: SkillLookupOptions): Promise<readonly SkillCandidate[] | SkillProviderObservation> => {
-      if (this.mode === 'all') return Promise.resolve([])
       const key = projectKeyOf(options.cwd)
       this.scheduleRefresh(options.cwd)
       this.invalidateSoonIfStateChanged()
@@ -199,7 +199,6 @@ class SkillManager {
 
   /** Names this manager currently tombstones for one cwd, sorted; empty before the first refresh. */
   disabledNames(cwd: string | undefined): string[] {
-    if (this.mode === 'all') return []
     const key = projectKeyOf(cwd)
     const universe = this.universes.get(key)
     if (universe === undefined) return []
@@ -306,7 +305,6 @@ class SkillManager {
 
   /** Mutate one project's overrides, persist atomically, and republish. */
   async setOverride(cwd: string | undefined, mutation: 'enable' | 'disable' | 'reset', skillName: string): Promise<void> {
-    if (this.mode === 'all') throw new Error('skill-manager mode is "all"; there is nothing to enable or disable')
     const key = projectKeyOf(cwd)
     const state = this.loadState()
     const project = state.projects[key] ?? {}

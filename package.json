@@ -1,7 +1,7 @@
 {
   "name": "dsh-skills-manager",
   "description": "Opt-in skill visibility control for the DeepSeek Harness: deny-list / allow-list policies, per-project runtime overrides, and a /skills command",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

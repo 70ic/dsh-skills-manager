@@ -24,10 +24,9 @@ export type SkillManagerMode = 'all' | 'deny-list' | 'allow-list';
 /** Plugin configuration. */
 export interface Config {
     /**
-     * Visibility policy: `all` mounts the manager inert, `deny-list` hides the
-     * configured names, `allow-list` hides everything except the configured
-     * names. Runtime overrides apply in both listing modes and are ignored in
-     * `all`.
+     * Visibility policy: `all` keeps every skill visible, `deny-list` hides
+     * the configured names, `allow-list` hides everything except the
+     * configured names. Runtime `/skills` overrides apply in every mode.
      */
     mode?: SkillManagerMode;
     /** Names the selected mode operates on; kebab-case skill identifiers. */
@@ -57,8 +56,10 @@ export declare function parseState(text: string): SkillManagerState;
 /** Normalize a cwd into the state file and universe key space. */
 export declare function projectKeyOf(cwd: string | undefined): string;
 /**
- * Resolve one skill name's visibility. Overrides outrank the static policy;
- * `all` is inert. Pure so tests and the provider share one definition.
+ * Resolve one skill name's visibility. Runtime overrides always outrank the
+ * static policy, in every mode — so the manager is useful out of the box:
+ * `mode: 'all'` means "everything visible, `/skills` toggles available".
+ * Pure so tests and the provider share one definition.
  */
 export declare function resolveEnabled(mode: SkillManagerMode, names: readonly string[], overrides: ProjectOverrides | undefined, skillName: string): boolean;
 export declare function apply(ctx: Context, config?: Config): void;
