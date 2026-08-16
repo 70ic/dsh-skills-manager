@@ -216,3 +216,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# The built plugin is committed so git installs work without a build step
+!lib/
+node_modules/
+.smoke-state.json

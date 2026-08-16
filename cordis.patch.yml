@@ -1,0 +1,14 @@
+# The configuration layer this bundle contributes when a profile lists it.
+# Rows reference this package by name so Node resolution finds the installed
+# code (see the "Package and install a plugin" tutorial in deepseek-harness).
+#
+# Defaults are inert (mode: all). Configure the plugin in your own layer:
+# `$DSH_HOME/profiles/<name>/cordis.patch.yml`, applied after this one:
+#
+#   - id: skill-manager
+#     config:
+#       mode: deny-list        # or allow-list
+#       names: [pdf, pptx]
+- insert:
+    - id: skill-manager
+      name: dsh-skills-manager
