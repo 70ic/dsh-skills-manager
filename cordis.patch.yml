@@ -2,13 +2,22 @@
 # Rows reference this package by name so Node resolution finds the installed
 # code (see the "Package and install a plugin" tutorial in deepseek-harness).
 #
-# Defaults are inert (mode: all). Configure the plugin in your own layer:
-# `$DSH_HOME/profiles/<name>/cordis.patch.yml`, applied after this one:
+# The plugin starts with every skill visible (mode: all) and the /skills
+# command fully functional — no configuration needed. Three policy layers,
+# loosest to tightest:
 #
-#   - id: skill-manager
-#     config:
-#       mode: deny-list        # or allow-list
-#       names: [pdf, pptx]
+#   1. this entry config (edit in your own patch layer,
+#      $DSH_HOME/profiles/<name>/cordis.patch.yml):
+#        - id: skills-manager
+#          config:
+#            mode: deny-list        # or allow-list
+#            names: [pdf, pptx]
+#   2. the `skills-manager:` section of $DSH_HOME/settings.yaml
+#      (hot-reloaded, overrides the entry config)
+#   3. the runtime policy set by `/skills mode ...` in a session
+#      (persisted, overrides both until `/skills mode reset`)
+#
+# Per-project `/skills enable|disable <name>` overrides outrank every layer.
 - insert:
-    - id: skill-manager
+    - id: skills-manager
       name: dsh-skills-manager

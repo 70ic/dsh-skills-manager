@@ -64,10 +64,15 @@ dsh --profile web
 
 | 输入 | 结果 |
 |---|---|
-| `/skills` | 列出当前工作区全部可发现 skill 及其状态（`enabled`、`enabled (override)`、`disabled`）。 |
+| `/skills` | 列出全部可发现 skill 及其状态和当前模式。 |
 | `/skills disable <name>` | 对本项目强制禁用，持久化，下一步重发布。 |
 | `/skills enable <name>` | 强制启用（可越过 `deny-list` 条目）。 |
-| `/skills reset <name>` | 删除覆盖项，回到静态策略。 |
+| `/skills reset <name>` | 删除覆盖项，回到当前策略。 |
+| `/skills mode` | 显示当前模式、名单及其来源层。 |
+| `/skills mode all` | 恢复全部可见。 |
+| `/skills mode deny-list [n1,n2,...]` | 隐藏名单内的 skill（名单可省略）。 |
+| `/skills mode allow-list [n1,n2,...]` | 只暴露名单内的 skill。 |
+| `/skills mode reset` | 删除运行期策略，回到设置/组合默认。 |
 
 覆盖项按会话项目目录写入状态文件：
 

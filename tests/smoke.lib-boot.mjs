@@ -28,7 +28,7 @@ for (let attempt = 0; attempt < 50; attempt++) {
   const snapshot = await ctx.skills.snapshot({})
   if (snapshot.complete) {
     const providers = new Map(snapshot.skills.map(skill => [skill.name, skill.provider]))
-    if (providers.get('alpha') === 'memory' && providers.get('beta') === 'skill-manager') {
+    if (providers.get('alpha') === 'memory' && providers.get('beta') === 'skills-manager') {
       const beta = await ctx.skills.get('beta')
       console.log(`smoke OK: alpha->memory, beta->${providers.get('beta')}, beta modelInvocable=${beta.invocation.modelInvocable}`)
       process.exit(0)

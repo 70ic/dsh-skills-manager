@@ -65,10 +65,15 @@ immediately. Add a static policy in your profile's own patch layer — `$DSH_HOM
 
 | Input | Result |
 |---|---|
-| `/skills` | List every discoverable skill in the current workspace with its state (`enabled`, `enabled (override)`, `disabled`). |
+| `/skills` | List every discoverable skill with its state, plus the active mode. |
 | `/skills disable <name>` | Force-disable for this project, persist, republish on the next model step. |
 | `/skills enable <name>` | Force-enable (overrides a `deny-list` entry). |
-| `/skills reset <name>` | Drop the override; the static policy decides again. |
+| `/skills reset <name>` | Drop the override; the active policy decides again. |
+| `/skills mode` | Show the active mode, its names, and which layer supplied it. |
+| `/skills mode all` | Everything visible again. |
+| `/skills mode deny-list [n1,n2,...]` | Hide the named skills (names optional). |
+| `/skills mode allow-list [n1,n2,...]` | Expose only the named skills. |
+| `/skills mode reset` | Drop the runtime policy; settings/composition decide again. |
 
 Overrides are keyed by the session's project directory in the state file:
 
